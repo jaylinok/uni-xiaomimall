@@ -12,21 +12,16 @@
 		<!-- 大图广告 -->
 		<card headTitle="每日精选" bodyCover="/static/images/demo/cate_banner.png"></card>
 
-		<!-- 公共列表组件750-5 =745  -->
-		<view class="row">
-			<view style="width: 372.5rpx;">
-				<image src="../../static/images/demo/list/2.jpg" mode="widthFix" lazy-load></image>
-				<view class="p-2 pt-1">
-					<view class="font-md">米家空调</view>
-					<text class="d-block font text-light-muted">1.5匹变频</text>
-					<view class="d-flex my-1">
-						<view class="d-flex main-text-color font-md line-h">
-							<text class="a-self-start font-sm">￥</text>1366
-						</view>
-						<view class="font-sm text-light-muted line-through ml-1 a-self-end line-h">￥2699</view>
-					</view>
-				</view>
-			</view>
+		<!-- 公共列表组件750-5 =745  /2 372.5 -->
+		<view class="row j-sb">
+			<block v-for="(item,index) in commonList" :key="index">
+				<common-list :item="item" :index="index"></common-list>
+			</block>
+		</view>
+		<view class="row j-sb">
+			<block v-for="(item,index) in commonList" :key="index">
+				<common-list :item="item" :index="index"></common-list>
+			</block>
 		</view>
 		<!-- 没有标题的卡片 -->
 		<card :showHead="false">
@@ -40,12 +35,14 @@
 	import indexNav from "@/components/index/index-nav.vue"
 	import threeAdv from "@/components/index/three-adv.vue"
 	import card from "@/components/common/card.vue"
+	import commonList from "@/components/common/common-list.vue"
 	export default {
 		components: {
 			swiperImage,
 			indexNav,
 			threeAdv,
-			card
+			card,
+			commonList
 		},
 		data() {
 			return {
@@ -109,7 +106,20 @@
 					smallbottom: {
 						src: '/static/images/demo/demo3.jpg'
 					}
-				}
+				},
+				commonList: [{
+					cover: "/static/images/demo/list/2.jpg",
+					title: "米家空调",
+					desc: "1.5匹变频",
+					oprice: 2699,
+					nprice: 1399
+				}, {
+					cover: "/static/images/demo/list/2.jpg",
+					title: "米家空调",
+					desc: "1.5匹变频",
+					oprice: 2699,
+					nprice: 1399
+				}]
 			}
 		},
 		onLoad() {
