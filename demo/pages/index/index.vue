@@ -9,36 +9,47 @@
 		</scroll-view>
 
 		<swiper :current="tabIndex" :style="'height:'+scrollH+'px;'" :duration="150" @change="onChangeTab">
-			<swiper-item v-for="(item ,index ) in tabBars" :key="index">
+			<swiper-item v-for="(item ,index ) in newsitems" :key="index">
 				<scroll-view scroll-y :style="'height:'+scrollH+'px;'">
-					<!-- 轮播图 -->
-					<swiper-image :resData="swipers"></swiper-image>
-					<!-- 图标导航 -->
-					<index-nav :resData="indexnavs"></index-nav>
-					<divider />
-					<!-- 三图广告 -->
-					<three-adv :resData="threeAdvs"></three-adv>
-					<divider />
-					<!-- 卡片视图 -->
-					<!-- 大图广告 -->
-					<card headTitle="每日精选" bodyCover="/static/images/demo/cate_banner.png"></card>
-					
-					<!-- 公共列表组件750-5 =745  /2 372.5 -->
-					<view class="row j-sb">
-						<block v-for="(item2,index2) in commonList" :key="index2">
-							<common-list :item="item2" :index="index2"></common-list>
-						</block>
-					</view>
-						
-					<!-- 没有标题的卡片 -->
-					<card :showHead="false">
-						<image src="/static/images/demo/cate_banner.png" mode="widthFix"></image>
-					</card>
+					<block v-for="(list,listIndex) in item.list" :key="listIndex">
+
+
+						<template v-if="list.type==='indexnavs'">
+							<!-- 图标导航 -->
+							<index-nav :resData="list.data" />
+							<divider />
+						</template>
+						<template v-else-if="list.type==='threeAdv'">
+							<!-- 三图广告 -->
+							<three-adv :resData="list.data" />
+							<divider />
+						</template>
+						<template v-else-if="list.type==='list'">
+
+							<!-- 卡片视图 -->
+							<!-- 大图广告 -->
+							<card headTitle="每日精选" bodyCover="/static/images/demo/cate_banner.png"></card>
+
+							<!-- 公共列表组件750-5 =745  /2 372.5 -->
+							<view class="row j-sb">
+								<block v-for="(item2,index2) in list.data" :key="index2">
+									<common-list :item="item2" :index="index2"></common-list>
+								</block>
+							</view>
+
+							<!-- 没有标题的卡片 -->
+							<card :showHead="false">
+								<image src="/static/images/demo/cate_banner.png" mode="widthFix"></image>
+							</card>
+						</template>
+						<!-- 轮播图 -->
+						<swiper-image v-else-if="list.type==='swipers'" :resData="list.data" />
+					</block>
 				</scroll-view>
 			</swiper-item>
 
 		</swiper>
-		
+
 	</view>
 </template>
 
@@ -95,98 +106,251 @@
 						name: '音乐'
 					}
 				],
-				swipers: [{
-					src: "../../static/images/demo/demo1.jpg"
-				}, {
-					src: "../../static/images/demo/demo2.jpg"
-				}, {
-					src: "../../static/images/demo/demo3.jpg"
-				}, {
-					src: "../../static/images/demo/demo4.jpg"
-				}],
-				indexnavs: [{
-						src: '/static/images/indexnav/1.png',
-						text: '新品分类'
+				newsitems: [{
+						name: '关注',
+						list: [{
+							type: 'swipers',
+							data: [{
+								src: "../../static/images/demo/demo1.jpg"
+							}, {
+								src: "../../static/images/demo/demo2.jpg"
+							}, {
+								src: "../../static/images/demo/demo3.jpg"
+							}, {
+								src: "../../static/images/demo/demo4.jpg"
+							}]
+						}, {
+							type: 'indexnavs',
+							data: [{
+									src: '/static/images/indexnav/1.png',
+									text: '新品分类'
+								},
+								{
+									src: '/static/images/indexnav/2.gif',
+									text: '小米众筹'
+								},
+								{
+									src: '/static/images/indexnav/3.gif',
+									text: '以旧换新'
+								},
+								{
+									src: '/static/images/indexnav/4.gif',
+									text: '1分拼团'
+								},
+								{
+									src: '/static/images/indexnav/5.gif',
+									text: '超值特买'
+								},
+								{
+									src: '/static/images/indexnav/6.gif',
+									text: '小米秒杀'
+								},
+								{
+									src: '/static/images/indexnav/7.gif',
+									text: '真心想要'
+								},
+								{
+									src: '/static/images/indexnav/8.gif',
+									text: '电视热卖'
+								},
+								{
+									src: '/static/images/indexnav/9.gif',
+									text: '加店热卖'
+								},
+								{
+									src: '/static/images/indexnav/10.gif',
+									text: '米粉卡'
+								}
+							]
+						}, {
+							type: 'threeAdv',
+							data: {
+								big: {
+									src: '/static/images/demo/demo1.jpg'
+								},
+								smalltop: {
+									src: '/static/images/demo/demo2.jpg'
+								},
+								smallbottom: {
+									src: '/static/images/demo/demo3.jpg'
+								}
+							}
+						}, {
+							type: 'list',
+							data: [{
+								cover: "/static/images/demo/list/2.jpg",
+								title: "米家空调",
+								desc: "1.5匹变频",
+								oprice: 2699,
+								nprice: 1399
+							}, {
+								cover: "/static/images/demo/list/2.jpg",
+								title: "米家空调",
+								desc: "1.5匹变频",
+								oprice: 2699,
+								nprice: 1399
+							}, {
+								cover: "/static/images/demo/list/2.jpg",
+								title: "米家空调",
+								desc: "1.5匹变频",
+								oprice: 2699,
+								nprice: 1399
+							}, {
+								cover: "/static/images/demo/list/2.jpg",
+								title: "米家空调",
+								desc: "1.5匹变频",
+								oprice: 2699,
+								nprice: 1399
+							}, {
+								cover: "/static/images/demo/list/2.jpg",
+								title: "米家空调",
+								desc: "1.5匹变频",
+								oprice: 2699,
+								nprice: 1399
+							}]
+						}]
 					},
 					{
-						src: '/static/images/indexnav/2.gif',
-						text: '小米众筹'
+						name: '家电',
+						list: []
 					},
 					{
-						src: '/static/images/indexnav/3.gif',
-						text: '以旧换新'
+						name: '智能',
+						list: [{
+								type: 'swipers',
+								data: [{
+									src: "../../static/images/demo/demo1.jpg"
+								}, {
+									src: "../../static/images/demo/demo2.jpg"
+								}, {
+									src: "../../static/images/demo/demo3.jpg"
+								}, {
+									src: "../../static/images/demo/demo4.jpg"
+								}]
+							}, {
+								type: 'indexnavs',
+								data: [{
+										src: '/static/images/indexnav/1.png',
+										text: '新品分类'
+									},
+									{
+										src: '/static/images/indexnav/2.gif',
+										text: '小米众筹'
+									},
+									{
+										src: '/static/images/indexnav/3.gif',
+										text: '以旧换新'
+									},
+									{
+										src: '/static/images/indexnav/4.gif',
+										text: '1分拼团'
+									},
+									{
+										src: '/static/images/indexnav/5.gif',
+										text: '超值特买'
+									},
+									{
+										src: '/static/images/indexnav/6.gif',
+										text: '小米秒杀'
+									},
+									{
+										src: '/static/images/indexnav/7.gif',
+										text: '真心想要'
+									},
+									{
+										src: '/static/images/indexnav/8.gif',
+										text: '电视热卖'
+									},
+									{
+										src: '/static/images/indexnav/9.gif',
+										text: '加店热卖'
+									},
+									{
+										src: '/static/images/indexnav/10.gif',
+										text: '米粉卡'
+									}
+								]
+							}, {
+								type: 'threeAdv',
+								data: {
+									big: {
+										src: '/static/images/demo/demo1.jpg'
+									},
+									smalltop: {
+										src: '/static/images/demo/demo2.jpg'
+									},
+									smallbottom: {
+										src: '/static/images/demo/demo3.jpg'
+									}
+								}
+							}, {
+								type: 'list',
+								data: [{
+									cover: "/static/images/demo/list/2.jpg",
+									title: "米家空调",
+									desc: "1.5匹变频",
+									oprice: 2699,
+									nprice: 1399
+								}, {
+									cover: "/static/images/demo/list/2.jpg",
+									title: "米家空调",
+									desc: "1.5匹变频",
+									oprice: 2699,
+									nprice: 1399
+								}, {
+									cover: "/static/images/demo/list/2.jpg",
+									title: "米家空调",
+									desc: "1.5匹变频",
+									oprice: 2699,
+									nprice: 1399
+								}, {
+									cover: "/static/images/demo/list/2.jpg",
+									title: "米家空调",
+									desc: "1.5匹变频",
+									oprice: 2699,
+									nprice: 1399
+								}, {
+									cover: "/static/images/demo/list/2.jpg",
+									title: "米家空调",
+									desc: "1.5匹变频",
+									oprice: 2699,
+									nprice: 1399
+								}]
+							}]
+						},
+					{
+						name: '摄影',
+						list: []
 					},
 					{
-						src: '/static/images/indexnav/4.gif',
-						text: '1分拼团'
+						name: '厨房',
+						list: []
 					},
 					{
-						src: '/static/images/indexnav/5.gif',
-						text: '超值特买'
+						name: '家居',
+						list: []
 					},
 					{
-						src: '/static/images/indexnav/6.gif',
-						text: '小米秒杀'
+						name: '生活',
+						list: []
 					},
 					{
-						src: '/static/images/indexnav/7.gif',
-						text: '真心想要'
+						name: '饮料',
+						list: []
 					},
 					{
-						src: '/static/images/indexnav/8.gif',
-						text: '电视热卖'
+						name: '调料',
+						list: []
 					},
 					{
-						src: '/static/images/indexnav/9.gif',
-						text: '加店热卖'
+						name: '学习',
+						list: []
 					},
 					{
-						src: '/static/images/indexnav/10.gif',
-						text: '米粉卡'
+						name: '音乐',
+						list: []
 					}
-				],
-				threeAdvs: {
-					big: {
-						src: '/static/images/demo/demo1.jpg'
-					},
-					smalltop: {
-						src: '/static/images/demo/demo2.jpg'
-					},
-					smallbottom: {
-						src: '/static/images/demo/demo3.jpg'
-					}
-				},
-				commonList: [{
-					cover: "/static/images/demo/list/2.jpg",
-					title: "米家空调",
-					desc: "1.5匹变频",
-					oprice: 2699,
-					nprice: 1399
-				},{
-					cover: "/static/images/demo/list/2.jpg",
-					title: "米家空调",
-					desc: "1.5匹变频",
-					oprice: 2699,
-					nprice: 1399
-				},{
-					cover: "/static/images/demo/list/2.jpg",
-					title: "米家空调",
-					desc: "1.5匹变频",
-					oprice: 2699,
-					nprice: 1399
-				},{
-					cover: "/static/images/demo/list/2.jpg",
-					title: "米家空调",
-					desc: "1.5匹变频",
-					oprice: 2699,
-					nprice: 1399
-				}, {
-					cover: "/static/images/demo/list/2.jpg",
-					title: "米家空调",
-					desc: "1.5匹变频",
-					oprice: 2699,
-					nprice: 1399
-				}]
+				]
 			}
 		},
 		onLoad() {
