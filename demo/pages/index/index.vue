@@ -1,32 +1,44 @@
 <template>
 	<view>
-		<!-- 轮播图 -->
-		<swiper-image :resData="swipers"></swiper-image>
-		<!-- 图标导航 -->
-		<index-nav :resData="indexnavs"></index-nav>
-		<divider />
-		<!-- 三图广告 -->
-		<three-adv :resData="threeAdvs"></three-adv>
-		<divider />
-		<!-- 卡片视图 -->
-		<!-- 大图广告 -->
-		<card headTitle="每日精选" bodyCover="/static/images/demo/cate_banner.png"></card>
+		<scroll-view scroll-x class="border-bottom scroll-row" style="height: 80upx;" :scroll-into-view="scrollinto"
+		 :scroll-with-animation="true">
+			<view class="scroll-row-item px-3" style="height: 80upx;line-height: 80upx;" v-for="(item,index) in tabBars" :key="index"
+			 :class="tabIndex===index?'main-text-color':''" @click="changeTab(index)" :id="'tab'+index">
+				<text class="font-md">{{item.name}}</text>
+			</view>
+		</scroll-view>
 
-		<!-- 公共列表组件750-5 =745  /2 372.5 -->
-		<view class="row j-sb">
-			<block v-for="(item,index) in commonList" :key="index">
-				<common-list :item="item" :index="index"></common-list>
-			</block>
-		</view>
-		<view class="row j-sb">
-			<block v-for="(item,index) in commonList" :key="index">
-				<common-list :item="item" :index="index"></common-list>
-			</block>
-		</view>
-		<!-- 没有标题的卡片 -->
-		<card :showHead="false">
-			<image src="/static/images/demo/cate_banner.png" mode="widthFix"></image>
-		</card>
+		<swiper :current="tabIndex" :style="'height:'+scrollH+'px;'" :duration="150" @change="onChangeTab">
+			<swiper-item v-for="(item ,index ) in tabBars" :key="index">
+				<scroll-view scroll-y :style="'height:'+scrollH+'px;'">
+					<!-- 轮播图 -->
+					<swiper-image :resData="swipers"></swiper-image>
+					<!-- 图标导航 -->
+					<index-nav :resData="indexnavs"></index-nav>
+					<divider />
+					<!-- 三图广告 -->
+					<three-adv :resData="threeAdvs"></three-adv>
+					<divider />
+					<!-- 卡片视图 -->
+					<!-- 大图广告 -->
+					<card headTitle="每日精选" bodyCover="/static/images/demo/cate_banner.png"></card>
+					
+					<!-- 公共列表组件750-5 =745  /2 372.5 -->
+					<view class="row j-sb">
+						<block v-for="(item2,index2) in commonList" :key="index2">
+							<common-list :item="item2" :index="index2"></common-list>
+						</block>
+					</view>
+						
+					<!-- 没有标题的卡片 -->
+					<card :showHead="false">
+						<image src="/static/images/demo/cate_banner.png" mode="widthFix"></image>
+					</card>
+				</scroll-view>
+			</swiper-item>
+
+		</swiper>
+		
 	</view>
 </template>
 
@@ -46,6 +58,43 @@
 		},
 		data() {
 			return {
+				scrollinto: "",
+				scrollH: 500,
+				tabIndex: 0,
+				tabBars: [{
+						name: '推荐'
+					},
+					{
+						name: '家电'
+					},
+					{
+						name: '智能'
+					},
+					{
+						name: '摄影'
+					},
+					{
+						name: '厨房'
+					},
+					{
+						name: '家居'
+					},
+					{
+						name: '生活'
+					},
+					{
+						name: '饮料'
+					},
+					{
+						name: '调料'
+					},
+					{
+						name: '学习'
+					},
+					{
+						name: '音乐'
+					}
+				],
 				swipers: [{
 					src: "../../static/images/demo/demo1.jpg"
 				}, {
@@ -113,6 +162,24 @@
 					desc: "1.5匹变频",
 					oprice: 2699,
 					nprice: 1399
+				},{
+					cover: "/static/images/demo/list/2.jpg",
+					title: "米家空调",
+					desc: "1.5匹变频",
+					oprice: 2699,
+					nprice: 1399
+				},{
+					cover: "/static/images/demo/list/2.jpg",
+					title: "米家空调",
+					desc: "1.5匹变频",
+					oprice: 2699,
+					nprice: 1399
+				},{
+					cover: "/static/images/demo/list/2.jpg",
+					title: "米家空调",
+					desc: "1.5匹变频",
+					oprice: 2699,
+					nprice: 1399
 				}, {
 					cover: "/static/images/demo/list/2.jpg",
 					title: "米家空调",
@@ -123,9 +190,27 @@
 			}
 		},
 		onLoad() {
-
+			//获取可视区域高度
+			uni.getSystemInfo({
+				success: (res) => {
+					// console.log("res: " + JSON.stringify(res));
+					this.scrollH = res.windowHeight - uni.upx2px(82);
+				}
+			})
 		},
 		methods: {
+			//切换选项卡
+			changeTab(index) {
+				if (this.tabIndex === index) {
+					return;
+				}
+				this.tabIndex = index
+				this.scrollinto = 'tab' + index
+			},
+			//监听滑动
+			onChangeTab(e) {
+				this.changeTab(e.detail.current)
+			}
 
 		}
 	}
