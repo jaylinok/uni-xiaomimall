@@ -10,7 +10,7 @@
 
 		<swiper :current="tabIndex" :style="'height:'+scrollH+'px;'" :duration="150" @change="onChangeTab">
 			<swiper-item v-for="(item ,index ) in newsitems" :key="index">
-				<scroll-view scroll-y :style="'height:'+scrollH+'px;'">
+				<scroll-view scroll-y :style="'height:'+scrollH+'px;'" @scrolltolower="loadMore(index)">
 					<block v-for="(list,listIndex) in item.list" :key="listIndex">
 
 
@@ -45,6 +45,9 @@
 						<!-- 轮播图 -->
 						<swiper-image v-else-if="list.type==='swipers'" :resData="list.data" />
 					</block>
+					<!-- 上拉加载更多 -->
+					<divider />
+					<view class="d-flex a-center j-center text-light-muted font-md py-3">{{item.loadText}}</view>
 				</scroll-view>
 			</swiper-item>
 
@@ -54,6 +57,243 @@
 </template>
 
 <script>
+	let demoTabbars = [{
+			name: '推荐'
+		},
+		{
+			name: '家电'
+		},
+		{
+			name: '智能'
+		},
+		{
+			name: '摄影'
+		},
+		{
+			name: '厨房'
+		},
+		{
+			name: '家居'
+		},
+		{
+			name: '生活'
+		},
+		{
+			name: '饮料'
+		},
+		{
+			name: '调料'
+		},
+		{
+			name: '学习'
+		},
+		{
+			name: '音乐'
+		}
+	];
+
+	let demo1 = [{
+		type: 'swipers',
+		data: [{
+			src: "../../static/images/demo/demo1.jpg"
+		}, {
+			src: "../../static/images/demo/demo2.jpg"
+		}, {
+			src: "../../static/images/demo/demo3.jpg"
+		}, {
+			src: "../../static/images/demo/demo4.jpg"
+		}]
+	}, {
+		type: 'indexnavs',
+		data: [{
+				src: '/static/images/indexnav/1.png',
+				text: '新品分类'
+			},
+			{
+				src: '/static/images/indexnav/2.gif',
+				text: '小米众筹'
+			},
+			{
+				src: '/static/images/indexnav/3.gif',
+				text: '以旧换新'
+			},
+			{
+				src: '/static/images/indexnav/4.gif',
+				text: '1分拼团'
+			},
+			{
+				src: '/static/images/indexnav/5.gif',
+				text: '超值特买'
+			},
+			{
+				src: '/static/images/indexnav/6.gif',
+				text: '小米秒杀'
+			},
+			{
+				src: '/static/images/indexnav/7.gif',
+				text: '真心想要'
+			},
+			{
+				src: '/static/images/indexnav/8.gif',
+				text: '电视热卖'
+			},
+			{
+				src: '/static/images/indexnav/9.gif',
+				text: '加店热卖'
+			},
+			{
+				src: '/static/images/indexnav/10.gif',
+				text: '米粉卡'
+			}
+		]
+	}, {
+		type: 'threeAdv',
+		data: {
+			big: {
+				src: '/static/images/demo/demo1.jpg'
+			},
+			smalltop: {
+				src: '/static/images/demo/demo2.jpg'
+			},
+			smallbottom: {
+				src: '/static/images/demo/demo3.jpg'
+			}
+		}
+	}, {
+		type: 'list',
+		data: [{
+			cover: "/static/images/demo/list/2.jpg",
+			title: "米家空调",
+			desc: "1.5匹变频",
+			oprice: 2699,
+			nprice: 1399
+		}, {
+			cover: "/static/images/demo/list/2.jpg",
+			title: "米家空调",
+			desc: "1.5匹变频",
+			oprice: 2699,
+			nprice: 1399
+		}, {
+			cover: "/static/images/demo/list/2.jpg",
+			title: "米家空调",
+			desc: "1.5匹变频",
+			oprice: 2699,
+			nprice: 1399
+		}, {
+			cover: "/static/images/demo/list/2.jpg",
+			title: "米家空调",
+			desc: "1.5匹变频",
+			oprice: 2699,
+			nprice: 1399
+		}, {
+			cover: "/static/images/demo/list/2.jpg",
+			title: "米家空调",
+			desc: "1.5匹变频",
+			oprice: 2699,
+			nprice: 1399
+		}]
+	}];
+	let demo2 = [{
+		type: 'swipers',
+		data: [{
+			src: "../../static/images/demo/demo1.jpg"
+		}, {
+			src: "../../static/images/demo/demo2.jpg"
+		}, {
+			src: "../../static/images/demo/demo3.jpg"
+		}, {
+			src: "../../static/images/demo/demo4.jpg"
+		}]
+	}, {
+		type: 'indexnavs',
+		data: [{
+				src: '/static/images/indexnav/1.png',
+				text: '新品分类'
+			},
+			{
+				src: '/static/images/indexnav/2.gif',
+				text: '小米众筹'
+			},
+			{
+				src: '/static/images/indexnav/3.gif',
+				text: '以旧换新'
+			},
+			{
+				src: '/static/images/indexnav/4.gif',
+				text: '1分拼团'
+			},
+			{
+				src: '/static/images/indexnav/5.gif',
+				text: '超值特买'
+			},
+			{
+				src: '/static/images/indexnav/6.gif',
+				text: '小米秒杀'
+			},
+			{
+				src: '/static/images/indexnav/7.gif',
+				text: '真心想要'
+			},
+			{
+				src: '/static/images/indexnav/8.gif',
+				text: '电视热卖'
+			},
+			{
+				src: '/static/images/indexnav/9.gif',
+				text: '加店热卖'
+			},
+			{
+				src: '/static/images/indexnav/10.gif',
+				text: '米粉卡'
+			}
+		]
+	}, {
+		type: 'threeAdv',
+		data: {
+			big: {
+				src: '/static/images/demo/demo1.jpg'
+			},
+			smalltop: {
+				src: '/static/images/demo/demo2.jpg'
+			},
+			smallbottom: {
+				src: '/static/images/demo/demo3.jpg'
+			}
+		}
+	}, {
+		type: 'list',
+		data: [{
+			cover: "/static/images/demo/list/2.jpg",
+			title: "米家空调",
+			desc: "1.5匹变频",
+			oprice: 2699,
+			nprice: 1399
+		}, {
+			cover: "/static/images/demo/list/2.jpg",
+			title: "米家空调",
+			desc: "1.5匹变频",
+			oprice: 2699,
+			nprice: 1399
+		}, {
+			cover: "/static/images/demo/list/2.jpg",
+			title: "米家空调",
+			desc: "1.5匹变频",
+			oprice: 2699,
+			nprice: 1399
+		}, {
+			cover: "/static/images/demo/list/2.jpg",
+			title: "米家空调",
+			desc: "1.5匹变频",
+			oprice: 2699,
+			nprice: 1399
+		}, {
+			cover: "/static/images/demo/list/2.jpg",
+			title: "米家空调",
+			desc: "1.5匹变频",
+			oprice: 2699,
+			nprice: 1399
+		}]
+	}];
 	import swiperImage from "@/components/index/swiper-image.vue"
 	import indexNav from "@/components/index/index-nav.vue"
 	import threeAdv from "@/components/index/three-adv.vue"
@@ -72,285 +312,8 @@
 				scrollinto: "",
 				scrollH: 500,
 				tabIndex: 0,
-				tabBars: [{
-						name: '推荐'
-					},
-					{
-						name: '家电'
-					},
-					{
-						name: '智能'
-					},
-					{
-						name: '摄影'
-					},
-					{
-						name: '厨房'
-					},
-					{
-						name: '家居'
-					},
-					{
-						name: '生活'
-					},
-					{
-						name: '饮料'
-					},
-					{
-						name: '调料'
-					},
-					{
-						name: '学习'
-					},
-					{
-						name: '音乐'
-					}
-				],
-				newsitems: [{
-						name: '关注',
-						list: [{
-							type: 'swipers',
-							data: [{
-								src: "../../static/images/demo/demo1.jpg"
-							}, {
-								src: "../../static/images/demo/demo2.jpg"
-							}, {
-								src: "../../static/images/demo/demo3.jpg"
-							}, {
-								src: "../../static/images/demo/demo4.jpg"
-							}]
-						}, {
-							type: 'indexnavs',
-							data: [{
-									src: '/static/images/indexnav/1.png',
-									text: '新品分类'
-								},
-								{
-									src: '/static/images/indexnav/2.gif',
-									text: '小米众筹'
-								},
-								{
-									src: '/static/images/indexnav/3.gif',
-									text: '以旧换新'
-								},
-								{
-									src: '/static/images/indexnav/4.gif',
-									text: '1分拼团'
-								},
-								{
-									src: '/static/images/indexnav/5.gif',
-									text: '超值特买'
-								},
-								{
-									src: '/static/images/indexnav/6.gif',
-									text: '小米秒杀'
-								},
-								{
-									src: '/static/images/indexnav/7.gif',
-									text: '真心想要'
-								},
-								{
-									src: '/static/images/indexnav/8.gif',
-									text: '电视热卖'
-								},
-								{
-									src: '/static/images/indexnav/9.gif',
-									text: '加店热卖'
-								},
-								{
-									src: '/static/images/indexnav/10.gif',
-									text: '米粉卡'
-								}
-							]
-						}, {
-							type: 'threeAdv',
-							data: {
-								big: {
-									src: '/static/images/demo/demo1.jpg'
-								},
-								smalltop: {
-									src: '/static/images/demo/demo2.jpg'
-								},
-								smallbottom: {
-									src: '/static/images/demo/demo3.jpg'
-								}
-							}
-						}, {
-							type: 'list',
-							data: [{
-								cover: "/static/images/demo/list/2.jpg",
-								title: "米家空调",
-								desc: "1.5匹变频",
-								oprice: 2699,
-								nprice: 1399
-							}, {
-								cover: "/static/images/demo/list/2.jpg",
-								title: "米家空调",
-								desc: "1.5匹变频",
-								oprice: 2699,
-								nprice: 1399
-							}, {
-								cover: "/static/images/demo/list/2.jpg",
-								title: "米家空调",
-								desc: "1.5匹变频",
-								oprice: 2699,
-								nprice: 1399
-							}, {
-								cover: "/static/images/demo/list/2.jpg",
-								title: "米家空调",
-								desc: "1.5匹变频",
-								oprice: 2699,
-								nprice: 1399
-							}, {
-								cover: "/static/images/demo/list/2.jpg",
-								title: "米家空调",
-								desc: "1.5匹变频",
-								oprice: 2699,
-								nprice: 1399
-							}]
-						}]
-					},
-					{
-						name: '家电',
-						list: []
-					},
-					{
-						name: '智能',
-						list: [{
-								type: 'swipers',
-								data: [{
-									src: "../../static/images/demo/demo1.jpg"
-								}, {
-									src: "../../static/images/demo/demo2.jpg"
-								}, {
-									src: "../../static/images/demo/demo3.jpg"
-								}, {
-									src: "../../static/images/demo/demo4.jpg"
-								}]
-							}, {
-								type: 'indexnavs',
-								data: [{
-										src: '/static/images/indexnav/1.png',
-										text: '新品分类'
-									},
-									{
-										src: '/static/images/indexnav/2.gif',
-										text: '小米众筹'
-									},
-									{
-										src: '/static/images/indexnav/3.gif',
-										text: '以旧换新'
-									},
-									{
-										src: '/static/images/indexnav/4.gif',
-										text: '1分拼团'
-									},
-									{
-										src: '/static/images/indexnav/5.gif',
-										text: '超值特买'
-									},
-									{
-										src: '/static/images/indexnav/6.gif',
-										text: '小米秒杀'
-									},
-									{
-										src: '/static/images/indexnav/7.gif',
-										text: '真心想要'
-									},
-									{
-										src: '/static/images/indexnav/8.gif',
-										text: '电视热卖'
-									},
-									{
-										src: '/static/images/indexnav/9.gif',
-										text: '加店热卖'
-									},
-									{
-										src: '/static/images/indexnav/10.gif',
-										text: '米粉卡'
-									}
-								]
-							}, {
-								type: 'threeAdv',
-								data: {
-									big: {
-										src: '/static/images/demo/demo1.jpg'
-									},
-									smalltop: {
-										src: '/static/images/demo/demo2.jpg'
-									},
-									smallbottom: {
-										src: '/static/images/demo/demo3.jpg'
-									}
-								}
-							}, {
-								type: 'list',
-								data: [{
-									cover: "/static/images/demo/list/2.jpg",
-									title: "米家空调",
-									desc: "1.5匹变频",
-									oprice: 2699,
-									nprice: 1399
-								}, {
-									cover: "/static/images/demo/list/2.jpg",
-									title: "米家空调",
-									desc: "1.5匹变频",
-									oprice: 2699,
-									nprice: 1399
-								}, {
-									cover: "/static/images/demo/list/2.jpg",
-									title: "米家空调",
-									desc: "1.5匹变频",
-									oprice: 2699,
-									nprice: 1399
-								}, {
-									cover: "/static/images/demo/list/2.jpg",
-									title: "米家空调",
-									desc: "1.5匹变频",
-									oprice: 2699,
-									nprice: 1399
-								}, {
-									cover: "/static/images/demo/list/2.jpg",
-									title: "米家空调",
-									desc: "1.5匹变频",
-									oprice: 2699,
-									nprice: 1399
-								}]
-							}]
-						},
-					{
-						name: '摄影',
-						list: []
-					},
-					{
-						name: '厨房',
-						list: []
-					},
-					{
-						name: '家居',
-						list: []
-					},
-					{
-						name: '生活',
-						list: []
-					},
-					{
-						name: '饮料',
-						list: []
-					},
-					{
-						name: '调料',
-						list: []
-					},
-					{
-						name: '学习',
-						list: []
-					},
-					{
-						name: '音乐',
-						list: []
-					}
-				]
+				tabBars: [],
+				newsitems: []
 			}
 		},
 		onLoad() {
@@ -361,8 +324,26 @@
 					this.scrollH = res.windowHeight - uni.upx2px(82);
 				}
 			})
+			//初始化事件
+			this.__init()
 		},
 		methods: {
+			__init() {
+				this.tabBars = demoTabbars
+				let arr = []
+				for (var i = 0; i < this.tabBars.length; i++) {
+					let obj = {
+						list: [],
+						//1上拉加载更多,2,3
+						loadText: "上拉加载更多"
+					}
+					if (i === 0) {
+						obj.list = demo1
+					}
+					arr.push(obj)
+					this.newsitems = arr
+				}
+			},
 			//切换选项卡
 			changeTab(index) {
 				if (this.tabIndex === index) {
@@ -370,12 +351,31 @@
 				}
 				this.tabIndex = index
 				this.scrollinto = 'tab' + index
+				this.addData()
 			},
 			//监听滑动
 			onChangeTab(e) {
 				this.changeTab(e.detail.current)
+			},
+			//家在数据
+			addData() {
+				let index = this.tabIndex
+				this.newsitems[index].list = demo2
+			},
+			loadMore(index) {
+				let item = this.newsitems[index]
+				if (item.loadText !== '上拉加载更多') {
+					return;
+				}
+				item.loadText = '加载中...'
+				setTimeout(() => {
+					item.list = [
+						...item.list,
+						...demo2
+					];
+					item.loadText = '上拉加载更多'
+				}, 2000)
 			}
-
 		}
 	}
 </script>
